@@ -21,6 +21,6 @@ async def test_signal(update: Update, context: ContextTypes.DEFAULT_TYPE):
 if __name__ == "__main__":
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("проверка", test_signal))
+    app.add_handler(CommandHandler("check", test_signal))
     print("Bot started")
     app.run_polling()
