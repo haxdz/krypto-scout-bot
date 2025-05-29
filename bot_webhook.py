@@ -78,7 +78,17 @@ if __name__ == "__main__":
     app.add_handler(CallbackQueryHandler(handle_callback))
     print("🤖 Бот запущен")
     app.add_error_handler(error_handler)
-app.run_polling()
+
+WEBHOOK_PATH = f"/{BOT_TOKEN}"
+WEBHOOK_URL = f"https://{os.getenv('RAILWAY_STATIC_URL')}{WEBHOOK_PATH}"
+
+app.run_webhook(
+    listen="0.0.0.0",
+    port=int(os.getenv('PORT', 8080)),
+    webhook_path=WEBHOOK_PATH,
+    webhook_url=WEBHOOK_URL
+)
+
 
 async def error_handler(update, context):
     logging.error(f"❌ Telegram error: {context.error}")
