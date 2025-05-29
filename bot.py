@@ -23,8 +23,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
     symbol = query.data
     signal = await generate_signal(symbol)
-    await query.edit_message_text(text=f"📊 Сигнал по {symbol}:
-{signal}")
+    await query.edit_message_text(text=f"📈 Сигнал по {symbol}:\n{signal}")
+
 
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
