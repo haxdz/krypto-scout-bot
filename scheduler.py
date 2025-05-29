@@ -10,7 +10,6 @@ async def scheduled_check(app):
     try:
         signal = await generate_signal("BTC")
         for chat_id in app.chat_data:
-            await app.bot.send_message(chat_id=chat_id, text=f"⏱ Автосигнал:
-{signal}")
+            await app.bot.send_message(chat_id=chat_id, text=f"⏱ Автосигнал:\n{signal}")
     except Exception as e:
         print("Ошибка автоанализа:", e)
