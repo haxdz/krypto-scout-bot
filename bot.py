@@ -1,3 +1,7 @@
+from telegram.ext import Defaults
+import logging
+logging.basicConfig(level=logging.INFO)
+
 
 import os
 import time
@@ -68,9 +72,13 @@ def schedule_thread():
 # Запуск Telegram и анализа параллельно
 if __name__ == "__main__":
     threading.Thread(target=schedule_thread, daemon=True).start()
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    app = ApplicationBuilder().token(BOT_TOKEN).defaults(Defaults(timeout=60)).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("check", check))
     app.add_handler(CallbackQueryHandler(handle_callback))
     print("🤖 Бот запущен")
-    app.run_polling()
+    app.add_error_handler(error_handler)
+app.run_polling()
+
+async def error_handler(update, context):
+    logging.error(f"❌ Telegram error: {context.error}")
