@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.log
+
+# Env
+.env
+.env.*
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environments
+venv/
+.envrc
+.venv/
+
+# PyInstaller
+dist/
+build/
+*.spec
+
+# Jupyter
+.ipynb_checkpoints
+
+# Mac
+*.DS_Store
+
+# Archive
+*.zip
