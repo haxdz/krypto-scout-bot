@@ -77,7 +77,6 @@ if __name__ == "__main__":
     app.add_handler(CommandHandler("check", check))
     app.add_handler(CallbackQueryHandler(handle_callback))
     print("🤖 Бот запущен")
-    app.add_error_handler(error_handler)
 
 WEBHOOK_PATH = f"/{BOT_TOKEN}"
 WEBHOOK_URL = f"https://{os.getenv('RAILWAY_STATIC_URL')}{WEBHOOK_PATH}"
