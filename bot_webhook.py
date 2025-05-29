@@ -7,11 +7,13 @@ from telegram.ext import (
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+PORT = int(os.environ.get("PORT", 8443))
 
 # Обработка /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Привет! Я Krypto Scout 🤖\nКаждые 15 минут я сканирую рынок.\nКоманды:\n/check — ручной анализ\n/track — отслеживание активов"
+        "Привет! Я Krypto Scout 🤖\nКаждые 15 минут я сканирую рынок.\nКоманды:\n/check — ручной анализ\n/portfolio — отслеживание активов"
     )
 
 # Обработка /check
@@ -40,13 +42,14 @@ if __name__ == "__main__":
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("check", check))
-    app.add_handler(CommandHandler("track", start))  # пока заглушка
+    app.add_handler(CommandHandler("portfolio", start))  # заглушка
     app.add_handler(CallbackQueryHandler(button_handler))
     app.add_error_handler(error_handler)
 
     print("🤖 Бот запущен")
     app.run_webhook(
         listen="0.0.0.0",
-        webhook_path=int(os.getenv("PORT", 8000)),
-        path="/"
+        port=PORT,
+        url_path=BOT_TOKEN,
+        webhook_url=f"{WEBHOOK_URL}/{BOT_TOKEN}"
     )
