@@ -47,6 +47,6 @@ if __name__ == "__main__":
     print("🤖 Бот запущен")
     app.run_webhook(
         listen="0.0.0.0",
-        port=int(os.getenv("PORT", 8000)),
+        webhook_path=int(os.getenv("PORT", 8000)),
         path="/"
     )
