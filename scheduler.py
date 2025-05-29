@@ -1,15 +1,11 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from signals import generate_signal
+from signals import check_market_and_notify
 
-def start_scheduler(app):
-    scheduler = AsyncIOScheduler()
-    scheduler.add_job(lambda: scheduled_check(app), 'interval', minutes=15)
-    scheduler.start()
+scheduler = AsyncIOScheduler()
 
-async def scheduled_check(app):
-    try:
-        signal = await generate_signal("BTC")
-        for chat_id in app.chat_data:
-            await app.bot.send_message(chat_id=chat_id, text=f"⏱ Автосигнал:\n{signal}")
-    except Exception as e:
-        print("Ошибка автоанализа:", e)
+def setup_jobs(app):
+    scheduler.add_job(check_market_and_notify, 'interval', seconds=900, args=[app])
+
+async def start_scheduler(app):
+    setup_jobs(app)
+    await scheduler.start()

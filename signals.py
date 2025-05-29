@@ -1,12 +1,9 @@
 import random
 
-async def generate_signal(symbol: str) -> str:
-    rsi = random.randint(20, 80)
-    volume = random.uniform(-40, 40)
-    price = random.randint(500, 2000)
-    signal = (
-        f"🔹 RSI: {rsi}\n"
-        f"🔹 Объём: {volume:.2f}% к среднему\n"
-        f"🔹 Текущая цена: ${price}"
-    )
-    return signal
+async def generate_signal(symbol):
+    direction = random.choice(["Покупать", "Продавать", "Наблюдать"])
+    return f"{direction} {symbol}"
+
+async def check_market_and_notify(app):
+    print("🔁 Автоматический анализ...")
+    # Здесь должен быть реальный анализ и отправка сообщений
