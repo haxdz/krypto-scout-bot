@@ -14,7 +14,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 # Telegram logic
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Привет! Я Krypto Scout 🤖\nКаждые 15 минут я сканирую рынок.\nКоманды:\n/check — ручной анализ\n/портфель — отслеживание активов"
+        "Привет! Я Krypto Scout 🤖\nКаждые 15 минут я сканирую рынок.\nКоманды:\n/check — ручной анализ\n/portfolio — отслеживание активов"
     )
 
 async def check(update: Update, context: ContextTypes.DEFAULT_TYPE):
