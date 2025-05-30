@@ -2,6 +2,7 @@ import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 from scheduler import scheduler
+from signals import generate_signal
 import asyncio
 import nest_asyncio  # добавь это
 
