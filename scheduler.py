@@ -9,7 +9,10 @@ def my_task(app):
 def setup_jobs(app):
     scheduler.add_job(check_market_and_notify, 'interval', seconds=900, args=[app])
 
+import asyncio
+
 def start_scheduler(app):
     scheduler = AsyncIOScheduler()
     scheduler.add_job(my_task, 'interval', seconds=10, args=[app])
-    scheduler.start()
+    loop = asyncio.get_event_loop()
+    loop.create_task(scheduler.start())
