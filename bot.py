@@ -22,7 +22,9 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     signal = await generate_signal(symbol)
     await query.edit_message_text(text=f"📊 Сигнал по {symbol}:/n{signal}")
 
-async def asyncio.run(main()):
+import asyncio
+
+async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("check", start))
@@ -30,9 +32,8 @@ async def asyncio.run(main()):
 
     start_scheduler(app)
     print("🤖 Бот запущен")
-    await app.run_polling()
 
-import asyncio
+    await app.run_polling()
 
 if __name__ == "__main__":
     asyncio.run(main())
