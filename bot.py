@@ -32,9 +32,9 @@ async def main():
 
     # Запускаем планировщик в асинхронном loop
     from scheduler import scheduler
-    scheduler.start()  # start без create_task — он сам асинхронный
 
     print("🤖 Бот запущен!")
+    scheduler.start()  # без await!
     app.run_polling()  # без await!
 
 if __name__ == "__main__":
