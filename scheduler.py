@@ -2,6 +2,10 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from signals import check_market_and_notify
 
 scheduler = AsyncIOScheduler()
+scheduler.add_job(check_market_and_notify, 'interval', seconds=900)  # каждый 15 минут
+
+def start():
+    scheduler.start()
 
 def my_task(app):
     print("🔄 Выполнена тестовая задача!")
