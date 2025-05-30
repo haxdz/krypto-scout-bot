@@ -1,8 +1,8 @@
 import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
+from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler
 from scheduler import start_scheduler
-from signals import generate_signal
+import asyncio
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
@@ -26,11 +26,14 @@ import asyncio
 
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
+
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("check", start))
     app.add_handler(CallbackQueryHandler(button_handler))
 
+    # Здесь нужно await!
     await start_scheduler(app)
+
     print("🤖 Бот запущен")
     await app.run_polling()
 
