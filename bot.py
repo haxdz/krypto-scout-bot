@@ -1,8 +1,9 @@
 import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
-from scheduler import start_scheduler
+from scheduler import scheduler
 import asyncio
+import nest_asyncio  # добавь это
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
@@ -13,16 +14,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("SOL", callback_data='SOL')],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("Привет! Я Krypto Scout 🤖\nВыбери монету для анализа:", reply_markup=reply_markup)
+    await update.message.reply_text("Привет! Я Крипто Scout 🌐\nВыбери монету для анализа:", reply_markup=reply_markup)
 
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     symbol = query.data
     signal = await generate_signal(symbol)
-    await query.edit_message_text(text=f"📊 Сигнал по {symbol}:/n{signal}")
-
-import asyncio
+    await query.edit_message_text(text=f"📊 Сигнал по {symbol}:\n{signal}")
 
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
@@ -30,13 +29,12 @@ async def main():
     app.add_handler(CommandHandler("check", start))
     app.add_handler(CallbackQueryHandler(button_handler))
 
-    # Запускаем планировщик в асинхронном loop
-    from scheduler import scheduler
+    # Планировщик
+    scheduler.start()
 
     print("🤖 Бот запущен!")
-    scheduler.start()  # без await!
-    app.run_polling()  # без await!
+    await app.run_polling()
 
 if __name__ == "__main__":
-    import asyncio
+    nest_asyncio.apply()  # важно!
     asyncio.run(main())
