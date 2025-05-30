@@ -22,7 +22,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     signal = await generate_signal(symbol)
     await query.edit_message_text(text=f"📊 Сигнал по {symbol}:/n{signal}")
 
-async def main():
+async def asyncio.run(main()):
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("check", start))
@@ -34,4 +34,4 @@ async def main():
 
 if __name__ == "__main__":
     import asyncio
-    asyncio.run(main())
+    asyncio.run(asyncio.run(main()))
