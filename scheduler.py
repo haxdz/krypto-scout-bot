@@ -3,6 +3,9 @@ from signals import check_market_and_notify
 
 scheduler = AsyncIOScheduler()
 
+def my_task(app):
+    print("🔄 Выполнена тестовая задача!")
+
 def setup_jobs(app):
     scheduler.add_job(check_market_and_notify, 'interval', seconds=900, args=[app])
 
