@@ -8,4 +8,4 @@ def setup_jobs(app):
 
 async def start_scheduler(app):
     setup_jobs(app)
-    await scheduler.start()
+    scheduler.start()

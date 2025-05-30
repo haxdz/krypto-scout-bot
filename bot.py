@@ -28,7 +28,7 @@ async def main():
     app.add_handler(CommandHandler("check", start))
     app.add_handler(CallbackQueryHandler(button_handler))
 
-    await start_scheduler(app)
+    start_scheduler(app)
     print("🤖 Бот запущен")
     await app.run_polling()
 
