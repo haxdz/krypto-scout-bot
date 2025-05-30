@@ -34,4 +34,4 @@ async def main():
 
 if __name__ == "__main__":
     import asyncio
-    main()
+    asyncio.run(main())
