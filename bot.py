@@ -24,15 +24,15 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 import asyncio
 
-async def main():
+def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("check", start))
     app.add_handler(CallbackQueryHandler(button_handler))
 
-    await start_scheduler(app)  # исправлено
+    start_scheduler(app)  # ⚡️ Убираем await, потому что функция теперь обычная
     print("🤖 Бот запущен!")
-    await app.run_polling()
+    app.run_polling()  # ⚡️ Убираем await
 
 if __name__ == "__main__":
     main()
