@@ -30,9 +30,8 @@ async def main():
     app.add_handler(CommandHandler("check", start))
     app.add_handler(CallbackQueryHandler(button_handler))
 
-    start_scheduler(app)
+    await start_scheduler(app)
     print("🤖 Бот запущен")
-
     await app.run_polling()
 
 if __name__ == "__main__":
