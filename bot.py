@@ -35,7 +35,8 @@ async def main():
     scheduler.start()  # start без create_task — он сам асинхронный
 
     print("🤖 Бот запущен!")
-    await app.run_polling()
+    app.run_polling()  # без await!
 
 if __name__ == "__main__":
-    main()
+    import asyncio
+    asyncio.run(main())
