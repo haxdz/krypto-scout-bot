@@ -32,6 +32,7 @@ async def asyncio.run(main()):
     print("🤖 Бот запущен")
     await app.run_polling()
 
+import asyncio
+
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(asyncio.run(main()))
+    asyncio.run(main())
