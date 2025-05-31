@@ -7,11 +7,11 @@ import nest_asyncio
 import asyncio
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-chat_id = None  # глобально сохраняем ID чата
+chat_id = None
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global chat_id
-    chat_id = update.effective_chat.id  # сохраняем chat_id
+    chat_id = update.effective_chat.id
     keyboard = [
         [InlineKeyboardButton("BTC", callback_data='BTC')],
         [InlineKeyboardButton("ETH", callback_data='ETH')],
@@ -33,8 +33,8 @@ async def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
 
-    # Запускаем планировщик
-    start_scheduler(app)  # передаем app, чтобы уведомления могли отправляться
+    # Передаём chat_id напрямую
+    start_scheduler(app, lambda: chat_id)
 
     print("🤖 Бот запущен!")
     await app.run_polling()
