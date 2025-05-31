@@ -4,7 +4,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandle
 from scheduler import scheduler
 from signals import generate_signal
 import asyncio
-import nest_asyncio  # добавь это
+import nest_asyncio
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
@@ -22,8 +22,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
     symbol = query.data
     signal_text, chart = await generate_signal(symbol)
+    await query.edit_message_text(text=signal_text)  # исправлено
     await context.bot.send_photo(chat_id=update.effective_chat.id, photo=chart, caption=signal_text)
-    await query.edit_message_text(text=f"📊 Сигнал по {symbol}:\n{signal}")
 
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
@@ -38,5 +38,5 @@ async def main():
     await app.run_polling()
 
 if __name__ == "__main__":
-    nest_asyncio.apply()  # важно!
+    nest_asyncio.apply()
     asyncio.run(main())
