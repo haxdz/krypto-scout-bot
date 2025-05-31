@@ -7,10 +7,11 @@ import asyncio
 import nest_asyncio
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-chat_ids = set()
+chat_ids = set()  # Запоминаем всех пользователей для уведомлений
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_ids.add(update.effective_chat.id)
+    start_scheduler(context.application, update.effective_chat.id)  # Запускаем уведомления для каждого нового чата
     keyboard = [
         [InlineKeyboardButton("BTC", callback_data='BTC')],
         [InlineKeyboardButton("ETH", callback_data='ETH')],
@@ -31,10 +32,6 @@ async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
-
-    # Запускаем уведомления для всех chat_id, которые уже записаны
-    for cid in chat_ids:
-        start_scheduler(app, cid)
 
     print("🤖 Бот запущен!")
     await app.run_polling()
