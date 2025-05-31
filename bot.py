@@ -42,12 +42,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    chat_ids.add(chat_id)  # ✅ Добавляем пользователя в set при любом нажатии кнопки
+
     query = update.callback_query
     await query.answer()
     symbol = query.data
 
     signal_text, chart = await generate_signal(symbol)
-    await context.bot.send_photo(chat_id=update.effective_chat.id, photo=chart, caption=signal_text)
+    await context.bot.send_photo(chat_id=chat_id, photo=chart, caption=signal_text)
     await query.edit_message_text(text=f"📊 Сигнал по {symbol}:\n{signal_text}")
 
 async def periodic_notify(app):
@@ -56,7 +59,7 @@ async def periodic_notify(app):
             for symbol in top_symbols:
                 text, chart = await generate_signal(symbol)
                 await app.bot.send_photo(chat_id=chat_id, photo=chart, caption=text)
-        await asyncio.sleep(60)  # уведомления каждые 15 минут
+        await asyncio.sleep(30)  # уведомления каждые 15 минут
 
 async def main():
     global top_symbols
