@@ -7,11 +7,13 @@ import asyncio
 import nest_asyncio
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-chat_ids = set()  # Запоминаем всех пользователей для уведомлений
+chat_ids = set()
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat_ids.add(update.effective_chat.id)
-    start_scheduler(context.application, update.effective_chat.id)  # Запускаем уведомления для каждого нового чата
+    chat_id = update.effective_chat.id
+    chat_ids.add(chat_id)
+    start_scheduler(context.application, chat_id)  # Запускаем планировщик для этого chat_id
+
     keyboard = [
         [InlineKeyboardButton("BTC", callback_data='BTC')],
         [InlineKeyboardButton("ETH", callback_data='ETH')],
