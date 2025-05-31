@@ -1,14 +1,17 @@
 import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
-from scheduler import scheduler
+from scheduler import start_scheduler
 from signals import generate_signal
-import asyncio
 import nest_asyncio
+import asyncio
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+chat_id = None  # глобально сохраняем ID чата
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    global chat_id
+    chat_id = update.effective_chat.id  # сохраняем chat_id
     keyboard = [
         [InlineKeyboardButton("BTC", callback_data='BTC')],
         [InlineKeyboardButton("ETH", callback_data='ETH')],
@@ -22,17 +25,16 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
     symbol = query.data
     signal_text, chart = await generate_signal(symbol)
-    await query.edit_message_text(text=signal_text)  # исправлено
     await context.bot.send_photo(chat_id=update.effective_chat.id, photo=chart, caption=signal_text)
+    await query.edit_message_text(text=f"📊 Сигнал по {symbol}:\n{signal_text}")
 
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("check", start))
     app.add_handler(CallbackQueryHandler(button_handler))
 
-    # Планировщик
-    scheduler.start()
+    # Запускаем планировщик
+    start_scheduler(app)  # передаем app, чтобы уведомления могли отправляться
 
     print("🤖 Бот запущен!")
     await app.run_polling()

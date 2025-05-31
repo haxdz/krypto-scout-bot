@@ -1,17 +1,23 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from signals import check_market_and_notify
+from signals import generate_signal
 import asyncio
+from bot import chat_id  # импортируем chat_id
 
 scheduler = AsyncIOScheduler()
 
-def my_task(app):
-    print("⚙️ Выполнена тестовая задача!")
+async def check_market_and_notify(app):
+    if chat_id is None:
+        print("⚠️ chat_id пока не установлен!")
+        return
 
-def setup_jobs(app):
-    scheduler.add_job(check_market_and_notify, 'interval', seconds=900, args=[app])
+    symbol = "BTC"  # или список монет для анализа
+    signal_text, chart = await generate_signal(symbol)
+    await app.bot.send_photo(chat_id=chat_id, photo=chart, caption=signal_text)
 
 def start_scheduler(app):
-    scheduler = AsyncIOScheduler()
-    scheduler.add_job(check_market_and_notify, 'interval', seconds=900, args=[app])
-    loop = asyncio.get_event_loop()
-    loop.create_task(scheduler.start())
+    scheduler.add_job(
+        lambda: asyncio.create_task(check_market_and_notify(app)),
+        "interval",
+        minutes=15
+    )
+    scheduler.start()
