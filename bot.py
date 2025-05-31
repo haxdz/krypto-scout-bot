@@ -21,7 +21,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     symbol = query.data
-    signal = await generate_signal(symbol)
+    signal_text, chart = await generate_signal(symbol)
+    await context.bot.send_photo(chat_id=update.effective_chat.id, photo=chart, caption=signal_text)
     await query.edit_message_text(text=f"📊 Сигнал по {symbol}:\n{signal}")
 
 async def main():
