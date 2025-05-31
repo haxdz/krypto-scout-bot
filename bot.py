@@ -1,13 +1,12 @@
+import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 from scheduler import scheduler
-from signals import generate_signal  # Вот здесь добавляем
+from signals import generate_signal
 import asyncio
-import nest_asyncio
+import nest_asyncio  # добавь это
 
-nest_asyncio.apply()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
@@ -18,25 +17,26 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Привет! Я Крипто Scout 🌐\nВыбери монету для анализа:", reply_markup=reply_markup)
 
-
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     symbol = query.data
-    # Вызываем функцию генерации сигнала
-    text_signal, chart = await generate_signal(symbol)
-    await query.edit_message_text(text=text_signal)
-    # Отправляем график как фото
-    await query.message.reply_photo(photo=chart)
-
+    signal_text, chart = await generate_signal(symbol)
+    await context.bot.send_photo(chat_id=update.effective_chat.id, photo=chart, caption=signal_text)
+    await query.edit_message_text(text=f"📊 Сигнал по {symbol}:\n{signal}")
 
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("check", start))
     app.add_handler(CallbackQueryHandler(button_handler))
-    scheduler.start()  # без await
+
+    # Планировщик
+    scheduler.start()
+
+    print("🤖 Бот запущен!")
     await app.run_polling()
 
-
 if __name__ == "__main__":
+    nest_asyncio.apply()  # важно!
     asyncio.run(main())
