@@ -1,13 +1,12 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import asyncio
-from signals import check_market_and_notify
 
 scheduler = AsyncIOScheduler()
 
 def start_scheduler(app, chat_id):
-    scheduler.add_job(
-        lambda: asyncio.create_task(check_market_and_notify(app, chat_id)),
-        trigger='interval',
-        minutes=1  # или 1 минута
-    )
+    async def dummy_task():
+        print(f"✅ Задача выполнена для {chat_id}!")  # это в логи выведется
+        await app.bot.send_message(chat_id=chat_id, text="⏰ Это тестовое уведомление от планировщика!")
+
+    scheduler.add_job(lambda: asyncio.create_task(dummy_task()), trigger='interval', seconds=60)
     scheduler.start()
