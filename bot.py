@@ -1,7 +1,6 @@
 import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
-from scheduler import start_scheduler
 from signals import generate_signal
 import asyncio
 import nest_asyncio
@@ -12,8 +11,6 @@ chat_ids = set()
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     chat_ids.add(chat_id)
-    start_scheduler(context.application, chat_id)  # Запускаем планировщик для этого chat_id
-
     keyboard = [
         [InlineKeyboardButton("BTC", callback_data='BTC')],
         [InlineKeyboardButton("ETH", callback_data='ETH')],
@@ -30,10 +27,20 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_photo(chat_id=update.effective_chat.id, photo=chart, caption=signal_text)
     await query.edit_message_text(text=f"📊 Сигнал по {symbol}:\n{signal_text}")
 
+async def periodic_notify(app):
+    while True:
+        for chat_id in chat_ids:
+            text, chart = await generate_signal("BTC")  # Можно заменить на другую монету
+            await app.bot.send_photo(chat_id=chat_id, photo=chart, caption=text)
+        await asyncio.sleep(60)  # интервал в 1 минуту
+
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
+
+    # Запускаем уведомления как отдельную задачу
+    asyncio.create_task(periodic_notify(app))
 
     print("🤖 Бот запущен!")
     await app.run_polling()
