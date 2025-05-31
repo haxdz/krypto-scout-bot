@@ -6,8 +6,10 @@ import random
 
 BINANCE_API_URL = "https://api.binance.com/api/v3/klines"
 
-async def check_market_and_notify(app):
-    print("🚀 Автоматический анализ...")
+async def check_market_and_notify(app, chat_id):
+    text_signal, chart = await generate_signal("BTC")  # Пример для BTC
+    await app.bot.send_photo(chat_id=chat_id, photo=chart, caption=text_signal)
+
 
 # Получение исторических данных (OHLCV)
 async def get_klines(symbol: str, interval: str = "1h", limit: int = 100):
