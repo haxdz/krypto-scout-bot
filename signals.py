@@ -6,6 +6,9 @@ import random
 
 BINANCE_API_URL = "https://api.binance.com/api/v3/klines"
 
+async def check_market_and_notify(app):
+    print("🚀 Автоматический анализ...")
+
 # Получение исторических данных (OHLCV)
 async def get_klines(symbol: str, interval: str = "1h", limit: int = 100):
     url = f"{BINANCE_API_URL}?symbol={symbol.upper()}USDT&interval={interval}&limit={limit}"
@@ -66,7 +69,7 @@ async def generate_signal(symbol: str):
     ma, upper_band, lower_band = calculate_bollinger_bands(prices)
     last_price = prices.iloc[-1]
 
-    # Логика сигнала (примерная)
+    # Логика сигнала
     if rsi < 30 and last_price < ema:
         action = "Покупать"
     elif rsi > 70 and last_price > ema:
@@ -76,11 +79,11 @@ async def generate_signal(symbol: str):
 
     # Текстовый сигнал
     text_signal = (
-        f"Сигнал по {symbol.upper()}:\n"
+        f"📊 Сигнал по {symbol.upper()}:\n"
         f"Цена: {last_price} USDT\n"
         f"RSI: {rsi:.2f}\n"
         f"EMA: {ema:.2f}\n"
-        f"MACD: {macd:.2f}, Сигнальная линия: {macd_signal:.2f}\n"
+        f"MACD: {macd:.2f} / Сигнальная линия: {macd_signal:.2f}\n"
         f"Рекомендация: {action}"
     )
 
