@@ -2,14 +2,8 @@ import aiohttp
 import pandas as pd
 import matplotlib.pyplot as plt
 import io
-import random
 
 BINANCE_API_URL = "https://api.binance.com/api/v3/klines"
-
-async def check_market_and_notify(app, chat_id):
-    text_signal, chart = await generate_signal("BTC")  # Пример для BTC
-    await app.bot.send_photo(chat_id=chat_id, photo=chart, caption=text_signal)
-
 
 # Получение исторических данных (OHLCV)
 async def get_klines(symbol: str, interval: str = "1h", limit: int = 100):
@@ -100,10 +94,9 @@ async def generate_signal(symbol: str):
     plt.legend()
     plt.grid(True)
 
-    # Сохраняем график в памяти
     buf = io.BytesIO()
     plt.savefig(buf, format="png")
     buf.seek(0)
     plt.close()
 
-    return text_signal, buf
+    return text_signal, buf, action
