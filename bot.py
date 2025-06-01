@@ -42,7 +42,7 @@ async def periodic_notify(app):
             for symbol in top_symbols:
                 text, chart = await generate_signal(symbol)
                 await app.bot.send_photo(chat_id=chat_id, photo=chart, caption=text)
-        await asyncio.sleep(900)  # уведомления каждые 15 минут
+        await asyncio.sleep(60)  # уведомления каждые 15 минут
 
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
