@@ -8,30 +8,13 @@ from signals import generate_signal
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 chat_ids = set()
-top_symbols = []
-
-async def get_top_15_symbols(min_cap=100_000_000):
-    url = "https://api.coingecko.com/api/v3/coins/markets"
-    params = {
-        "vs_currency": "usd",
-        "order": "market_cap_desc",
-        "per_page": 15,
-        "page": 1,
-    }
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url, params=params) as response:
-            data = await response.json()
-    symbols = []
-    for coin in data:
-        if coin["market_cap"] and coin["market_cap"] >= min_cap:
-            symbols.append(coin["symbol"].upper())
-    return symbols
+top_symbols = ["BTC", "ETH", "SOL", "DOGE", "TRX", "ADA", "SUI", "SHIB", "TON", "DOT", "PEPE"]
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     chat_ids.add(chat_id)
 
-    # Динамически формируем кнопки из top_symbols
+    # Динамически формируем кнопки из твоего списка
     keyboard = [
         [InlineKeyboardButton(symbol, callback_data=symbol)] for symbol in top_symbols
     ]
@@ -59,12 +42,9 @@ async def periodic_notify(app):
             for symbol in top_symbols:
                 text, chart = await generate_signal(symbol)
                 await app.bot.send_photo(chat_id=chat_id, photo=chart, caption=text)
-        await asyncio.sleep(30)  # уведомления каждые 15 минут
+        await asyncio.sleep(900)  # уведомления каждые 15 минут
 
 async def main():
-    global top_symbols
-    top_symbols = await get_top_15_symbols()
-
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
