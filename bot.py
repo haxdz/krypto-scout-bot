@@ -1,7 +1,7 @@
 import os
 import asyncio
 import nest_asyncio
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 from signals import generate_signal
 
@@ -32,8 +32,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     symbol = query.data
 
     signal_text, chart, action = await generate_signal(symbol)
-    await context.bot.send_photo(chat_id=chat_id, photo=chart, caption=signal_text)
-    await query.edit_message_text(text=f"📊 Сигнал по {symbol}:\n{signal_text}")
+
+    await query.edit_message_media(
+        media=InputMediaPhoto(media=chart, caption=signal_text)
+    )
 
     last_signals[(chat_id, symbol)] = action  # обновляем рекомендацию
 
